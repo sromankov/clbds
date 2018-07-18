@@ -30,3 +30,7 @@ is writable for web server
 
 ###That`s it
 
+To run some tests:
+
+>phpunit tests/RangesOptimizationTests.php
+
