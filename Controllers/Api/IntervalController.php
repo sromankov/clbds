@@ -44,6 +44,11 @@ class IntervalController
      */
     public function create(Request $request)
     {
+        $errors = $this->validateRequest($request);
+        if (sizeof($errors)) {
+            return json(['status' => false, 'data' => ['errors' => $errors]]);
+        }
+
         $model = new Interval();
         /**
          * @var $currentList EntitiesCollection
@@ -85,6 +90,11 @@ class IntervalController
      */
     public function update(Request $request, $id)
     {
+        $errors = $this->validateRequest($request);
+        if (sizeof($errors)) {
+            return json(['status' => false, 'data' => ['errors' => $errors]]);
+        }
+
         $model = new Interval();
         /**
          * @var $currentList EntitiesCollection
@@ -128,6 +138,36 @@ class IntervalController
         $newList->apply();
 
         return json(['status' => true, 'data' => []]);
+    }
+
+    /**
+     * Not the best validation method. TODO implement Validators
+     *
+     * @param Request $request
+     * @return array
+     */
+    protected function validateRequest(Request $request)
+    {
+        $errors = [];
+        $attributes = $request->attributes->all();
+
+        if (!($attributes['price'] >0))
+        {
+            $errors['price'] = 'Price should be greater than 0';
+        }
+
+        $allDaysEmpty = true;
+        foreach (self::$pricesKeys as $pricesKey) {
+            if ($attributes[$pricesKey] == 1) {
+                $allDaysEmpty = false;
+            }
+        }
+
+        if ($allDaysEmpty) {
+            $errors['days'] = 'Please select ay least one day';
+        }
+
+        return $errors;
     }
 
     /* --------------------- Below is an optimization part -------------*/

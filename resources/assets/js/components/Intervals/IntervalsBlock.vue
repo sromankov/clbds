@@ -51,7 +51,7 @@
                     },
                     error => {
                         // TODO errors notifications
-                        alert(`Rejected: ${error}`)
+                        alert(`${error}`)
                     }
                 )
             });
@@ -64,7 +64,7 @@
                         $('#myModal').modal('show');
                     },
                     error => {
-                        alert(`Rejected: ${error}`)
+                        alert(`${error}`)
                     }
                 );
             });
@@ -78,7 +78,7 @@
                     },
                     error => {
                         // TODO errors notifications
-                        alert(`Rejected: ${error}`)
+                        alert(`${error}`)
                     }
                 );
             });
@@ -104,9 +104,7 @@
                         console.log(error);
                         this.requestWasExecuted = true;
                         this.list = [];
-                        this.meta = null;
 
-                        console.log(error.response);
                     });
             },
 
@@ -149,7 +147,16 @@
                             if (res.data.status) {
                                 resolve(res.data.data);
                             } else {
-                                reject(new Error('Wrong status'));
+
+                                if (res.data.data.errors) {
+
+                                    var message = vm.getErrorMessage(res.data.data.errors);
+
+                                    reject(new Error(message));
+                                } else {
+
+                                    reject(new Error('Wrong status'));
+                                }
                             }
                         })
                         .catch(error =>   {
@@ -198,7 +205,26 @@
                     sat: 0,
                     sun: 0,
                 };
+            },
+
+            getErrorMessage(errorObject)
+            {
+                var errors=[];
+                var message = null;
+                for (var key in errorObject) {
+                    if (errorObject.hasOwnProperty(key)) {
+                        errors.push(errorObject[key]);
+                    }
+                    message = errors.join('; ')
+                }
+                if (!errors.length) {
+                    message = null;
+                }
+
+                return message;
             }
+
+
         }
     }
 </script>

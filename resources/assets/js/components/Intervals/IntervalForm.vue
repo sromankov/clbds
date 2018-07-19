@@ -83,7 +83,7 @@
 
     import moment from 'moment';
     import {eventBus} from '../../app';
-    import { required, minValue, between, numeric } from 'vuelidate/lib/validators';
+    import { required, minValue, between, numeric, decimal } from 'vuelidate/lib/validators';
 
     export default {
         props: [
@@ -104,7 +104,9 @@
 
             formData: {
                 price : {
-                    required
+                    required,
+                    decimal,
+//                    minValue: minValue(0.01)
                 }
             },
         },

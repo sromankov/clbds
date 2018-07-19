@@ -62421,7 +62421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 vm.getList();
             }, function (error) {
                 // TODO errors notifications
-                alert('Rejected: ' + error);
+                alert('' + error);
             });
         });
 
@@ -62431,7 +62431,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 vm.requestData = response.range;
                 $('#myModal').modal('show');
             }, function (error) {
-                alert('Rejected: ' + error);
+                alert('' + error);
             });
         });
 
@@ -62442,7 +62442,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 vm.getList();
             }, function (error) {
                 // TODO errors notifications
-                alert('Rejected: ' + error);
+                alert('' + error);
             });
         });
 
@@ -62464,9 +62464,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
                 _this.requestWasExecuted = true;
                 _this.list = [];
-                _this.meta = null;
-
-                console.log(error.response);
             });
         },
         getInterval: function getInterval(id) {
@@ -62502,7 +62499,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     if (res.data.status) {
                         resolve(res.data.data);
                     } else {
-                        reject(new Error('Wrong status'));
+
+                        if (res.data.data.errors) {
+
+                            var message = vm.getErrorMessage(res.data.data.errors);
+
+                            reject(new Error(message));
+                        } else {
+
+                            reject(new Error('Wrong status'));
+                        }
                     }
                 }).catch(function (error) {
                     reject(error);
@@ -62543,6 +62549,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 sat: 0,
                 sun: 0
             };
+        },
+        getErrorMessage: function getErrorMessage(errorObject) {
+            var errors = [];
+            var message = null;
+            for (var key in errorObject) {
+                if (errorObject.hasOwnProperty(key)) {
+                    errors.push(errorObject[key]);
+                }
+                message = errors.join('; ');
+            }
+            if (!errors.length) {
+                message = null;
+            }
+
+            return message;
         }
     }
 });
@@ -63695,7 +63716,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         formData: {
             price: {
-                required: __WEBPACK_IMPORTED_MODULE_2_vuelidate_lib_validators__["required"]
+                required: __WEBPACK_IMPORTED_MODULE_2_vuelidate_lib_validators__["required"],
+                decimal: __WEBPACK_IMPORTED_MODULE_2_vuelidate_lib_validators__["decimal"]
+                //                    minValue: minValue(0.01)
             }
         }
     },
